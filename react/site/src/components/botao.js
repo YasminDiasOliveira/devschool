@@ -4,7 +4,7 @@ const Botao = styled.div`
   display: flex;
   align-items: flex-end;
 
-  a {
+  button {
     padding: 0.6em 1em;
 
     background: #e911c6;

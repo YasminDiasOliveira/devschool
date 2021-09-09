@@ -5,13 +5,78 @@ import { Novo } from "../components/novo";
 import { Botao } from "../components/botao";
 import { Titulo } from "../components/titulo";
 import { Input } from "../components/input";
-import { Cab } from "../components/cab";
-import { Tabela } from "../components/tabela";
-import { Tabela1 } from "../components/tabela1";
-import { Tabela2 } from "../components/tabela2";
 import { Fonte_Bold } from "../components/fonte-bold";
 
+import { useState, useEffect } from "react";
+
+import Api from '../service/api';
+const api = new Api();
+
 export default function Turma3() {
+
+  const [alunos, setAlunos] = useState([]);
+  const [nome, setNome] = useState('');
+  const [chamada, setChamada] = useState('');
+  const [turma, setTurma] = useState('');
+  const [curso, setCurso] = useState('');
+  const [idAlterando, setIdAlterando] = useState(0);
+
+
+  async function listar() {
+    let r = await api.listar();
+    setAlunos(r);
+  }
+
+  async function inserir() {
+
+    if(idAlterando == 0) { 
+      let r = await api.inserir(nome, chamada, curso, turma);
+
+      if(r.erro) 
+        alert(r.erro);
+      else
+        alert('Aluno inserido!');
+
+    } else {
+      let r = await api.alterar(idAlterando, nome, chamada, curso, turma);
+
+      if(r.erro) 
+        alert(r.erro);
+      else
+        alert('Aluno alterado!');
+    }
+
+    limparCampos();
+    listar();
+  }
+
+  function limparCampos() {
+    setNome('');
+    setChamada('');
+    setCurso('');
+    setTurma('');
+    setIdAlterando(0);
+  }
+
+  async function remover(id) {
+    let r = await api.remover(id);
+    alert('Aluno removido');
+
+    listar();
+  }
+
+  async function editar(item){
+    setNome(item.nm_aluno);
+    setChamada(item.nr_chamada);
+    setCurso(item.nm_curso);
+    setTurma(item.nm_turma);
+    setIdAlterando(item.id_matricula);
+  }
+
+  useEffect(() => {
+    listar();
+  }, [])
+
   return (
     <Turma>
       <Cabecalho>
@@ -29,35 +94,35 @@ export default function Turma3() {
       <Borda />
 
       <Novo>
-        <Titulo>Novo Aluno</Titulo>
+        <Titulo> {idAlterando == 0 ? "Novo Aluno" : "Alterando Aluno " +  idAlterando } </Titulo>
 
         <Input>
           <div class="input1">
             <div class="box1">
               <label for="nome">Nome:</label>
-              <input type="text" class="text-input" />
+              <input type="text" value={nome} onChange={e => setNome(e.target.validationMessage)} class="text-input" />
             </div>
 
             <div class="box">
               <label for="nome">Chamada:</label>
-              <input type="text" class="text-input" />
+              <input type="text" value={chamada} onChange={e => setChamada(e.target.validationMessage)} class="text-input" />
             </div>
           </div>
 
           <div class="input2">
             <div class="box">
               <label for="nome">Curso:</label>
-              <input type="text" class="text-input" />
+              <input type="text" value={curso} onChange={e => setCurso(e.target.validationMessage)} class="text-input" />
             </div>
 
             <div class="box">
               <label for="nome">Turma:</label>
-              <input type="text" class="text-input" />
+              <input type="text" value={turma} onChange={e => setTurma(e.target.validationMessage)} class="text-input" />
             </div>
           </div>
 
           <Botao>
-            <a href=""> Cadastrar </a>
+            <button onClick={inserir}> {idAlterando == 0 ? "Cadastrar" : "Alterar"} </button>
           </Botao>
         </Input>
       </Novo>
@@ -68,9 +133,9 @@ export default function Turma3() {
           <Titulo>Alunos Matriculados</Titulo>
         </div>
 
-        <Tabela>
+        <table>
           <thead>
-            <Cab>
+            <tr>
               <th>ID</th>
               <th>Nome</th>
               <th>Chamada</th>
@@ -78,123 +143,27 @@ export default function Turma3() {
               <th>Curso</th>
               <th></th>
               <th></th>
-            </Cab>
+            </tr>
           </thead>
 
           <tbody>
-            <Tabela1>
-              <td>1</td>
-              <td>Fulao da Silva Sauro</td>
-              <td>14</td>
-              <td>InfoX</td>
-              <td>Informática</td>
-              <td>
-                <img src="/imgs/alterar.png" alt="" />
-              </td>
-              <td>
-                <img src="/imgs/deletar.png" alt="" />
-              </td>
-            </Tabela1>
-
-            <Tabela2>
-              <td>2</td>
-              <td>Fulao da Silva Sauro</td>
-              <td>15</td>
-              <td>InfoX</td>
-              <td>Informática</td>
-              <td>
-                <img src="/imgs/alterar.png" alt="" />
-              </td>
-              <td>
-                <img src="/imgs/deletar.png" alt="" />
-              </td>
-            </Tabela2>
-
-            <Tabela1>
-              <td>3</td>
-              <td>Fulao da Silva Sauro</td>
-              <td>16</td>
-              <td>InfoX</td>
-              <td>Informática</td>
-              <td>
-                <img src="/imgs/alterar.png" alt="" />
-              </td>
-              <td>
-                <img src="/imgs/deletar.png" alt="" />
-              </td>
-            </Tabela1>
-
-            <Tabela2>
-              <td>4</td>
-              <td>Fulao da Silva Sauro</td>
-              <td>17</td>
-              <td>InfoX</td>
-              <td>Informática</td>
-              <td>
-                <img src="/imgs/alterar.png" alt="" />
-              </td>
-              <td>
-                <img src="/imgs/deletar.png" alt="" />
-              </td>
-            </Tabela2>
-
-            <Tabela1>
-              <td>5</td>
-              <td>Fulao da Silva Sauro</td>
-              <td>18</td>
-              <td>InfoX</td>
-              <td>Informática</td>
-              <td>
-                <img src="/imgs/alterar.png" alt="" />
-              </td>
-              <td>
-                <img src="/imgs/deletar.png" alt="" />
-              </td>
-            </Tabela1>
-
-            <Tabela2>
-              <td>6</td>
-              <td>Fulao da Silva Sauro</td>
-              <td>19</td>
-              <td>InfoX</td>
-              <td>Informática</td>
-              <td>
-                <img src="/imgs/alterar.png" alt="" />
-              </td>
-              <td>
-                <img src="/imgs/deletar.png" alt="" />
-              </td>
-            </Tabela2>
-
-            <Tabela1>
-              <td>7</td>
-              <td>Fulao da Silva Sauro</td>
-              <td>20</td>
-              <td>InfoX</td>
-              <td>Informática</td>
-              <td>
-                <img src="/imgs/alterar.png" alt="" />
-              </td>
-              <td>
-                <img src="/imgs/deletar.png" alt="" />
-              </td>
-            </Tabela1>
-
-            <Tabela2>
-              <td>8</td>
-              <td>Fulao da Silva Sauro</td>
-              <td>21</td>
-              <td>InfoX</td>
-              <td>Informática</td>
-              <td>
-                <img src="/imgs/alterar.png" alt="" />
-              </td>
-              <td>
-                <img src="/imgs/deletar.png" alt="" />
-              </td>
-            </Tabela2>
+            {alunos.map((item, i) =>
+              <tr className={i % 2 == 0 ? "linha-alternada" : ""}>
+                <td> {item.id_matricula} </td>
+                <td title={item.nm_aluno}> 
+                      {item.nm_aluno != null && item.nm_aluno.length >= 25 
+                      ? item.nm_aluno.substr(0, 25) + '...' 
+                      : item.nm_aluno} 
+                </td>
+                <td> {item.nr_chamada} </td>
+                <td> {item.nm_turma} </td>
+                <td> {item.nm_curso} </td>
+                <td className="coluna-acao"> <button onClick={() => editar(item)} > <img src="/imgs/alterar.png" alt="" /> </button> </td> 
+                <td className="coluna-acao"> <button onClick={() => remover(item.id_matricula) }> <img src="/imgs/deletar.png" alt="" /> </button> </td>
+              </tr>
+            )}
           </tbody>
-        </Tabela>
+        </table>
       </Novo>
     </Turma>
   );

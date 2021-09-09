@@ -4,6 +4,11 @@ const Menu = styled.div`
   display: flex;
   flex-direction: column;
 
+  height: 100vh;
+
+  position: sticky;
+  top: 0px;
+
   .logo {
     background-color: #2b3031;
     padding: 2em 3.5em;
@@ -34,7 +39,6 @@ const Menu = styled.div`
 
   .categorias img {
     width: 12px;
-    height: 6px;
   }
 
   .categorias2 {
