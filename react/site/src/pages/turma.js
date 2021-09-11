@@ -7,6 +7,12 @@ import { Titulo } from "../components/titulo";
 import { Input } from "../components/input";
 import { Fonte_Bold } from "../components/fonte-bold";
 
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+
 import { useState, useEffect } from "react";
 
 import Api from '../service/api';
@@ -58,14 +64,33 @@ export default function Turma3() {
     setIdAlterando(0);
   }
 
-  async function remover(id) {
-    let r = await api.remover(id);
-    alert('Aluno removido');
-
-    listar();
+  function remover(id) {
+    confirmAlert({
+      title:'Remover aluno',
+      message: `Tem certeza que deseja remover o aluno ${id} ?`,
+      buttons: [
+        {
+          label: 'Sim',
+          onClick: async () => {
+            let r = await api.remover(id);
+            if (r.erro)
+              toast.error(`${r.erro}`);
+            else {
+              toast.dark('Aluno removido');
+              listar();
+            }
+   
+          }
+        },
+        {
+          label: 'Não'
+        }
+      ]
+    });
+    
   }
 
-  async function editar(item){
+  async function editar (item){
     setNome(item.nm_aluno);
     setChamada(item.nr_chamada);
     setCurso(item.nm_curso);
@@ -151,9 +176,7 @@ export default function Turma3() {
               <tr className={i % 2 == 0 ? "linha-alternada" : ""}>
                 <td> {item.id_matricula} </td>
                 <td title={item.nm_aluno}> 
-                      {item.nm_aluno != null && item.nm_aluno.length >= 25 
-                      ? item.nm_aluno.substr(0, 25) + '...' 
-                      : item.nm_aluno} 
+                     <img src={item.nm_aluno} alt="" style={{width: '40px', height:'40px'}} />
                 </td>
                 <td> {item.nr_chamada} </td>
                 <td> {item.nm_turma} </td>
