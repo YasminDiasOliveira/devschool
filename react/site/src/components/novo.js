@@ -12,7 +12,6 @@ const Novo = styled.div`
   }
   
   td {
-    background-color: #f5f5f5;
     width: 119px;
     text-align: center;
   }
@@ -55,8 +54,12 @@ const Novo = styled.div`
     text-align: center;
   }
 
- .linha-alternada {
+ .linha-alternada2 {
    background-color: #FFFFFF;
+ }
+
+ .linha-alternada {
+  background-color: #f5f5f5;
  }
 
 

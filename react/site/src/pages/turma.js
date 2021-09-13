@@ -10,10 +10,12 @@ import { Fonte_Bold } from "../components/fonte-bold";
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
+import LoadingBar from 'react-top-loading-bar';
+
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import Api from '../service/api';
 const api = new Api();
@@ -27,33 +29,63 @@ export default function Turma3() {
   const [curso, setCurso] = useState('');
   const [idAlterando, setIdAlterando] = useState(0);
 
+  const loading = useRef(null);
+
+  const atualizar = async () => {
+    loading.current.continuousStart();
+
+    const alunos = await api.listar(1);
+    setAlunos(alunos)
+
+    loading.current.complete();
+  }
 
   async function listar() {
     let r = await api.listar();
     setAlunos(r);
+
   }
 
   async function inserir() {
 
+    if ( chamada < 0 ) 
+      return toast.error( 'Chamada negativa não existe!' )
+
+    if ( nome === '' )
+      return toast.error( "O campo Nome precisa ser preenchido" );
+
+    if ( chamada === '' )
+      return toast.error( " O campo Chamada precisa ser preenchido " );
+
+    if ( turma === '' )
+      return toast.error( "O campo Turma precisa ser preenchido" );
+
+    if ( curso === '' )
+      return toast.error( "O campo Curso precisa ser preenchido" );
+      
     if(idAlterando == 0) { 
       let r = await api.inserir(nome, chamada, curso, turma);
 
       if(r.erro) 
-        alert(r.erro);
+        toast.error(r.erro);
       else
-        alert('Aluno inserido!');
+        toast.dark('Aluno inserido!');
 
     } else {
       let r = await api.alterar(idAlterando, nome, chamada, curso, turma);
 
       if(r.erro) 
-        alert(r.erro);
+        toast.error(r.erro);
       else
-        alert('Aluno alterado!');
+        toast.dark('Aluno alterado!');
     }
+
+
 
     limparCampos();
     listar();
+    await atualizar();
+
   }
 
   function limparCampos() {
@@ -104,6 +136,8 @@ export default function Turma3() {
 
   return (
     <Turma>
+      <LoadingBar color="purple" ref={loading} />
+      <ToastContainer />
       <Cabecalho>
         <div class="usuario">
           <img src="/imgs/usu.png" alt="" />
@@ -125,24 +159,24 @@ export default function Turma3() {
           <div class="input1">
             <div class="box1">
               <label for="nome">Nome:</label>
-              <input type="text" value={nome} onChange={e => setNome(e.target.validationMessage)} class="text-input" />
+              <input type="text" value={nome} onChange={e => setNome(e.target.value)} class="text-input" />
             </div>
 
             <div class="box">
               <label for="nome">Chamada:</label>
-              <input type="text" value={chamada} onChange={e => setChamada(e.target.validationMessage)} class="text-input" />
+              <input type="text" value={chamada} onChange={e => setChamada(e.target.value)} class="text-input" />
             </div>
           </div>
 
           <div class="input2">
             <div class="box">
               <label for="nome">Curso:</label>
-              <input type="text" value={curso} onChange={e => setCurso(e.target.validationMessage)} class="text-input" />
+              <input type="text" value={curso} onChange={e => setCurso(e.target.value)} class="text-input" />
             </div>
 
             <div class="box">
               <label for="nome">Turma:</label>
-              <input type="text" value={turma} onChange={e => setTurma(e.target.validationMessage)} class="text-input" />
+              <input type="text" value={turma} onChange={e => setTurma(e.target.value)} class="text-input" />
             </div>
           </div>
 
@@ -173,10 +207,11 @@ export default function Turma3() {
 
           <tbody>
             {alunos.map((item, i) =>
-              <tr className={i % 2 == 0 ? "linha-alternada" : ""}>
+              <tr className={i % 2 == 0 ? "linha-alternada" : "linha-alternada2"}>
                 <td> {item.id_matricula} </td>
-                <td title={item.nm_aluno}> 
-                     <img src={item.nm_aluno} alt="" style={{width: '40px', height:'40px'}} />
+                <td title={item.nm_aluno}> {item.nm_aluno != null && item.nm_aluno.length >= 25
+                                              ? item.nm_aluno.substr(0, 25) + '...'
+                                              : item.nm_aluno }  
                 </td>
                 <td> {item.nr_chamada} </td>
                 <td> {item.nm_turma} </td>
