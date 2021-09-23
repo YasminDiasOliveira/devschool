@@ -63,7 +63,7 @@ export default function Turma3() {
     if ( curso === '' )
       return toast.error( "O campo Curso precisa ser preenchido" );
       
-    if(idAlterando == 0) { 
+    if(idAlterando === 0) { 
       let r = await api.inserir(nome, chamada, curso, turma);
 
       if(r.erro) 
@@ -153,7 +153,7 @@ export default function Turma3() {
       <Borda />
 
       <Novo>
-        <Titulo> {idAlterando == 0 ? "Novo Aluno" : "Alterando Aluno " +  idAlterando } </Titulo>
+        <Titulo> {idAlterando === 0 ? "Novo Aluno" : "Alterando Aluno " +  idAlterando } </Titulo>
 
         <Input>
           <div class="input1">
@@ -181,7 +181,7 @@ export default function Turma3() {
           </div>
 
           <Botao>
-            <button onClick={inserir}> {idAlterando == 0 ? "Cadastrar" : "Alterar"} </button>
+            <button onClick={inserir}> {idAlterando === 0 ? "Cadastrar" : "Alterar"} </button>
           </Botao>
         </Input>
       </Novo>
@@ -207,7 +207,7 @@ export default function Turma3() {
 
           <tbody>
             {alunos.map((item, i) =>
-              <tr className={i % 2 == 0 ? "linha-alternada" : "linha-alternada2"}>
+              <tr className={i % 2 === 0 ? "linha-alternada" : "linha-alternada2"}>
                 <td> {item.id_matricula} </td>
                 <td title={item.nm_aluno}> {item.nm_aluno != null && item.nm_aluno.length >= 25
                                               ? item.nm_aluno.substr(0, 25) + '...'
