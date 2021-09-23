@@ -5,7 +5,6 @@ import { Novo } from "../components/novo";
 import { Botao } from "../components/botao";
 import { Titulo } from "../components/titulo";
 import { Input } from "../components/input";
-import { Fonte_Bold } from "../components/fonte-bold";
 
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
@@ -141,7 +140,7 @@ export default function Turma3() {
       <Cabecalho>
         <div class="usuario">
           <img src="/imgs/usu.png" alt="" />
-          Olá, <Fonte_Bold> Yasmin Dias de Oliveira </Fonte_Bold>
+          Olá, Yasmin Dias de Oliveira
         </div>
 
         <div class="botoes">
